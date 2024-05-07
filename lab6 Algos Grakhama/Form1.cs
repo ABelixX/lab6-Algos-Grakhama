@@ -83,6 +83,7 @@ namespace lab6_Algos_Grakhama
         public static int countOfTouching = 0;
         static public int countofTimes = 0;
         static public int indexOfMinXY = 0;
+        static public int PROVERKA = 0;
         void draw_dude()
         {
             Graphics g = pictureBox1.CreateGraphics();
