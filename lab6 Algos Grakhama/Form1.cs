@@ -48,21 +48,22 @@ namespace lab6_Algos_Grakhama
         /*
         static public List<Point1> listOfPoints = new List<Point1>()
         {
-           new Point1(1,-2),
-           new Point1(-3,6),
-           new Point1(0,-5),
-           new Point1(-4,-1),
-           new Point1(5,-5),
-           new Point1(2,2),
            new Point1(0,4),
-           new Point1(4,-1),
-           new Point1(6,0),
-           new Point1(4,5)
-        };
-        */
+           new Point1(3,4),
+           new Point1(3,2),
+           new Point1(3,0),
+           new Point1(3,-2),
+           new Point1(0,-2),
+           new Point1(-2,-2),
+           new Point1(-2,0),
+           new Point1(-2,2),
+           new Point1(-2,4)
+        };*/
+       
         public static int k = 20;
         public static int width = 601;
         public static int height = 601;
+        
         static public List<Point1> listOfPoints = new List<Point1>()
         {
            new Point1(1,-2),
@@ -76,6 +77,7 @@ namespace lab6_Algos_Grakhama
            new Point1(6,0),
            new Point1(4,5)
         };
+        
         static public List<Point1> listOfPoints2 = new List<Point1>();
         static public List<Point1> listforAlgorithm = new List<Point1>();
         static public List<List<Point1>> listForDraw= new List<List<Point1>>();
@@ -215,7 +217,7 @@ namespace lab6_Algos_Grakhama
         }
         bool right(Point1 p1, Point1 p2, Point1 p3)
         {
-            return !(((p2.X - p1.X) * (p3.Y - p2.Y) - (p2.Y - p1.Y) * (p3.X - p2.X)) >= 0);
+            return !(((p2.X - p1.X) * (p3.Y - p2.Y) - (p2.Y - p1.Y) * (p3.X - p2.X)) > 0);
         }
         int getMinXY()
         {
