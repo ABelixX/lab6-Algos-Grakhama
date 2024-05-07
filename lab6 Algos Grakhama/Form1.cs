@@ -45,6 +45,21 @@ namespace lab6_Algos_Grakhama
             }
             
         }
+        /*
+        static public List<Point1> listOfPoints = new List<Point1>()
+        {
+           new Point1(1,-2),
+           new Point1(-3,6),
+           new Point1(0,-5),
+           new Point1(-4,-1),
+           new Point1(5,-5),
+           new Point1(2,2),
+           new Point1(0,4),
+           new Point1(4,-1),
+           new Point1(6,0),
+           new Point1(4,5)
+        };
+        */
         public static int k = 20;
         public static int width = 601;
         public static int height = 601;
@@ -62,8 +77,12 @@ namespace lab6_Algos_Grakhama
            new Point1(4,5)
         };
         static public List<Point1> listOfPoints2 = new List<Point1>();
+        static public List<Point1> listforAlgorithm = new List<Point1>();
+        static public List<List<Point1>> listForDraw= new List<List<Point1>>();
         public static Point1 p;
         public static int countOfTouching = 0;
+        static public int countofTimes = 0;
+        static public int indexOfMinXY = 0;
         void draw_dude()
         {
             Graphics g = pictureBox1.CreateGraphics();
@@ -81,13 +100,38 @@ namespace lab6_Algos_Grakhama
             //рисуем отрезок
             //g.DrawLine(new Pen(Color.Red, 2f), new Point(NormalX(x1), NormalY(y1)), new Point(NormalX(x2), NormalY(y2)));
             //рисуем прямоугольник
-            for(int i =0;i<listOfPoints.Count;i++)
+            
+            if (countOfTouching == 0)
             {
-                g.DrawEllipse(new Pen(Color.Red, 2f), NormalX(listOfPoints[i].X), NormalY(listOfPoints[i].Y), 2, 2);
+                for (int i = 0; i < listOfPoints.Count; i++)
+                {
+                    g.DrawEllipse(new Pen(Color.Red, 4f), NormalX(listOfPoints[i].X), NormalY(listOfPoints[i].Y), 2, 2);
+                }
+                indexOfMinXY = getMinXY();
+                p = listOfPoints[indexOfMinXY].Copy();
+                g.DrawEllipse(new Pen(Color.Blue, 4f), NormalX(listOfPoints[indexOfMinXY].X), NormalY(listOfPoints[indexOfMinXY].Y), 2, 2);//стартовая точка
             }
-            int indexOfMinXY = getMinXY();
-            p = listOfPoints[indexOfMinXY].Copy();
-            g.DrawEllipse(new Pen(Color.Blue, 2f), NormalX(listOfPoints[indexOfMinXY].X), NormalY(listOfPoints[indexOfMinXY].Y), 2, 2);//стартовая точка
+            else if(countOfTouching == 1)
+            {
+                for (int i = 0; i < listOfPoints.Count; i++)
+                {
+                    g.DrawEllipse(new Pen(Color.Red, 4f), NormalX(listOfPoints2[i].X), NormalY(listOfPoints2[i].Y), 2, 2);
+                }
+                
+
+                for (;countofTimes<listForDraw.Count;)
+               {
+                    for(int i = 0; i < listForDraw[countofTimes].Count-1;++i)
+                    {
+                        g.DrawLine(new Pen(Color.Green, 3f), new Point(NormalX(listForDraw[countofTimes][i].X), NormalY(listForDraw[countofTimes][i].Y)), new Point(NormalX(listForDraw[countofTimes][i+1].X), NormalY(listForDraw[countofTimes][i+1].Y)));
+                    }
+                    
+
+                    break;
+                    
+               }
+
+            }
 
         }
         private void button1_Click(object sender, EventArgs e)
@@ -110,36 +154,64 @@ namespace lab6_Algos_Grakhama
                     listOfPoints2[i].X += p.X;
                     listOfPoints2[i].Y += p.Y;
                 }
+                algorithm();
                 ++countOfTouching;
             }
             else if (countOfTouching == 1)
             {
-                Stack<Point1> points = new Stack<Point1>();
-                points.Push(listOfPoints2[0]); points.Push(listOfPoints2[1]); points.Push(listOfPoints2[2]);
-                for(int i = 3;i<listOfPoints2.Count; ++i)
-                {
-                    bool stop = false;
-                    while(!stop)
-                    {
-                        Point1 p = points.Pop();
-                        Point1 p1 = points.Peek();
-                        if (right(p1, p, listOfPoints2[i]))
-                        {
-                            stop = true; 
-                            points.Push(p); 
-                            points.Push(listOfPoints2[i]);
-                        }
-                    }
-                     
-                }
+                
+
                 draw_dude();
+                countofTimes++;
                 
 
             }
         
 
         }
+        void algorithm()
+        {
+            Stack<Point1> points = new Stack<Point1>();
+            points.Push(listOfPoints2[0]); points.Push(listOfPoints2[1]); points.Push(listOfPoints2[2]);
+            listforAlgorithm.Add(listOfPoints2[0]); listforAlgorithm.Add(listOfPoints2[1]); listforAlgorithm.Add(listOfPoints2[2]);
+            for (int i = 3; i < listOfPoints2.Count; ++i)
+            {
+                bool stop = false;
+                while (!stop)
+                {
+                    Point1 p = points.Pop();//list[list.count-1]
+                    Point1 p1 = points.Peek();//list[list.count-2]
+                    listforAlgorithm.Add(listOfPoints2[i]);
+                    listForDraw.Add(new List<Point1>());
+                    for(int j = 0;j<listforAlgorithm.Count;++j)
+                        listForDraw[listForDraw.Count - 1].Add(listforAlgorithm[j]);
+                    if (right(p1, p, listOfPoints2[i]))
+                    {
+                        stop = true;
+                        points.Push(p);
+                        points.Push(listOfPoints2[i]);
+                    }
+                    else
+                    {
+                        listforAlgorithm.RemoveAt(listforAlgorithm.Count - 1);
+                        listforAlgorithm.RemoveAt(listforAlgorithm.Count - 1);
+                    }
 
+                }
+
+            }
+            listForDraw.Add(new List<Point1>());
+            for(int i =0;i< listForDraw[listForDraw.Count - 2].Count;++i)
+            {
+                listForDraw[listForDraw.Count - 1].Add(listForDraw[listForDraw.Count - 2][i]);
+                if (i == listForDraw[listForDraw.Count - 2].Count - 1)
+                    listForDraw[listForDraw.Count - 1].Add(listOfPoints2[0].Copy());
+            }
+            
+           // listForDraw[listForDraw.Count - 1].Add(listOfPoints2[0].Copy());
+
+
+        }
         bool right(Point1 p1, Point1 p2, Point1 p3)
         {
             return !(((p2.X - p1.X) * (p3.Y - p2.Y) - (p2.Y - p1.Y) * (p3.X - p2.X)) >= 0);
